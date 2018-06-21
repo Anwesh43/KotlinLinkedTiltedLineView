@@ -91,7 +91,7 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
 
         fun addNeighbor() {
             if (i < LTL_NODES - 1) {
-                next = LTLNode(i)
+                next = LTLNode(i+1)
                 next?.prev = this
             }
         }
@@ -105,7 +105,7 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
             paint.color = Color.parseColor("#2980b9")
             prev?.draw(canvas, paint)
             canvas.save()
-            canvas.translate(0f + (gap/2) * i, h - i * (gap * Math.sqrt(3.0)).toFloat()/2)
+            canvas.translate(gap/2 + (gap/2) * i, h - (i +1) * (gap * Math.sqrt(3.0)).toFloat()/2)
             canvas.rotate(30f + 180f * state.scale)
             canvas.drawLine(0f, 0f, 0f, gap, paint)
             canvas.restore()
@@ -120,7 +120,7 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
         }
 
         fun getNext(dir : Int, cb : () -> Unit) : LTLNode {
-            var curr : LTLNode? = next
+            var curr : LTLNode? = prev
             if (dir == 1) {
                 curr = next
             }
