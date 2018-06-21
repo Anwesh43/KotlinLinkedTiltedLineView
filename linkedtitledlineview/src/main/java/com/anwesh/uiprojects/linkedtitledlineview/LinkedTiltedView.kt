@@ -9,6 +9,8 @@ import android.graphics.*
 import android.view.View
 import android.view.MotionEvent
 
+val LTL_NODES : Int = 5
+
 class LinkedTiltedView (ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -71,6 +73,58 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
             if (animated) {
                 animated = false
             }
+        }
+    }
+
+    data class LTLNode(var i : Int, val state : LTState = LTState()) {
+
+        private var next : LTLNode? = null
+
+        private var prev : LTLNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < LTL_NODES - 1) {
+                next = LTLNode(i)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val gap : Float = (w / LTL_NODES)
+            paint.strokeWidth = Math.min(w, h) / 60
+            paint.strokeCap = Paint.Cap.ROUND
+            paint.color = Color.parseColor("#2980b9")
+            canvas.save()
+            canvas.translate(0f + (gap/2) * i, h - i * (gap * Math.sqrt(3.0)).toFloat()/2)
+            canvas.rotate(30f + 180f * state.scale)
+            canvas.drawLine(0f, 0f, 0f, gap, paint)
+            canvas.restore()
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : LTLNode {
+            var curr : LTLNode? = next
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
         }
     }
 }
