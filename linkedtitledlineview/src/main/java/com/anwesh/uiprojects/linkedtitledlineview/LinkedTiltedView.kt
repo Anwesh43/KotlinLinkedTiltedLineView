@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedtitledlineview
  * Created by anweshmishra on 21/06/18.
  */
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.view.View
@@ -173,6 +174,14 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
             ltl.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : LinkedTiltedView {
+            val view : LinkedTiltedView = LinkedTiltedView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
