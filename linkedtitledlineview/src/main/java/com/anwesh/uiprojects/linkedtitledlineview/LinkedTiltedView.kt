@@ -100,6 +100,7 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
             paint.strokeWidth = Math.min(w, h) / 60
             paint.strokeCap = Paint.Cap.ROUND
             paint.color = Color.parseColor("#2980b9")
+            prev?.draw(canvas, paint)
             canvas.save()
             canvas.translate(0f + (gap/2) * i, h - i * (gap * Math.sqrt(3.0)).toFloat()/2)
             canvas.rotate(30f + 180f * state.scale)
@@ -125,6 +126,30 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
             }
             cb()
             return this
+        }
+    }
+
+    data class LinkedTiltedLine (var i : Int) {
+
+        private var curr : LTLNode = LTLNode(0)
+
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            curr.draw(canvas, paint)
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                stopcb(it)
+            }
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            curr.startUpdating(startcb)
         }
     }
 }
