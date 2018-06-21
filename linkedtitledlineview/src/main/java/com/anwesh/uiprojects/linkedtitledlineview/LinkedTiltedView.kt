@@ -152,4 +152,27 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
             curr.startUpdating(startcb)
         }
     }
+
+    data class Renderer(var view : LinkedTiltedView) {
+
+        private val animator : LTAnimator = LTAnimator(view)
+
+        private val ltl : LinkedTiltedLine = LinkedTiltedLine(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            ltl.draw(canvas, paint)
+            animator.animate {
+                ltl.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            ltl.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
