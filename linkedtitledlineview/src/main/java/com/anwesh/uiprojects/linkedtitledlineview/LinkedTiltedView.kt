@@ -6,6 +6,7 @@ package com.anwesh.uiprojects.linkedtitledlineview
 
 import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.*
 import android.view.View
 import android.view.MotionEvent
@@ -99,13 +100,13 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
         fun draw(canvas : Canvas, paint : Paint) {
             val w : Float = canvas.width.toFloat()
             val h : Float = canvas.height.toFloat()
-            val gap : Float = (w / LTL_NODES)
+            val gap : Float = (Math.min(w, h) / LTL_NODES)
             paint.strokeWidth = Math.min(w, h) / 60
             paint.strokeCap = Paint.Cap.ROUND
             paint.color = Color.parseColor("#2980b9")
             prev?.draw(canvas, paint)
             canvas.save()
-            canvas.translate(gap/2 + (gap/2) * i, h - (i +1) * (gap * Math.sqrt(3.0)).toFloat()/2)
+            canvas.translate(gap + gap/2 + (gap/2) * i, h - (i + 2) * (gap * Math.sqrt(3.0)).toFloat()/2)
             canvas.rotate(30f + 180f * state.scale)
             canvas.drawLine(0f, 0f, 0f, gap, paint)
             canvas.restore()
@@ -182,6 +183,7 @@ class LinkedTiltedView (ctx : Context) : View(ctx) {
     companion object {
         fun create(activity : Activity) : LinkedTiltedView {
             val view : LinkedTiltedView = LinkedTiltedView(activity)
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             activity.setContentView(view)
             return view
         }
